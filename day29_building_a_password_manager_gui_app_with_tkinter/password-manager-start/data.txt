@@ -1,0 +1,3 @@
+google_email | l26061113@mail.ncku.edu.tw | g826826826yahoo | q60305@yahoo.com.tw | g826827828
+test | q60305@yahoo.com.tw | test
+ette | example@email.com | ette
