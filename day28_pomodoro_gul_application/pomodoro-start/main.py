@@ -41,7 +41,6 @@ def start_timer():
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
 
-    global check_text
     count_min = math.floor(count / 60)
     count_sec = count % 60
 
