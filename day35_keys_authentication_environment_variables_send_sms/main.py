@@ -37,8 +37,8 @@ if will_rain:
         to='Your Phone Number'
     )
 print(message.status)
-# hourly_weather = weather_data["hourly"]
-#
+hourly_weather = weather_data["hourly"]
+
 # for num, item in enumerate(hourly_weather):
 #     if item["weather"][0]["id"] < 700:
 #         print(f"At {num} hours later, bring an umbrella")
