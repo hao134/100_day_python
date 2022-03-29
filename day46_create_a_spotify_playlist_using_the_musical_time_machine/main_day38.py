@@ -2,8 +2,10 @@ from bs4 import BeautifulSoup
 import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-spotify_client_id = "7aa77ad45cec4e699f4cc5b73ca45f2a"
-spotify_client_secret = "e682e8902e294707ba2461e05cc5603d"
+import os
+
+spotify_client_id = os.environ["SPOTIFY_CLIENT_ID"]
+spotify_client_secret = os.environ["SPOTIFY_CLIENT_SECRET"]
 
 
 year=  input("Which year do you want to travel to? ")
