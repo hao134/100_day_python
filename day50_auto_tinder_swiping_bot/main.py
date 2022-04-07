@@ -4,8 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import ElementClickInterceptedException, NoSuchElementException
 
-FB_EMAIL = "410214318@ems.ndhu.edu.tw"
-FB_PASSWORD = "xuul8969"
+FB_EMAIL = "Your FB EMAIL"
+FB_PASSWORD = "YOUR FB PASSWORD"
 
 chrome_driver_path = "/Users/huangshihao/Development/chromedriver"
 driver = webdriver.Chrome(executable_path=chrome_driver_path)
