@@ -1,9 +1,9 @@
-from flask import Flask, url_for, redirect
+from flask import Flask, url_for, redirect, render_template
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return 'hello man'
+    return render_template('abc.html')
 
 @app.route('/user/<username>')
 def username(username):
