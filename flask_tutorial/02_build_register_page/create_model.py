@@ -1,11 +1,22 @@
-from model import db, User
+#  我們先import設置的model
+from model import User
+from model import Contact
+from model import db
 
-# firstly create model, uncomment next line
-# db.create_all()
+# firstly
+# #  增加一個使用者為admin
+# user = User(username='admin',email='admin@abc.com')
+# #  增加一個聯絡人
+# contact = Contact(contact_style='mobile', contact_context='3345678')
+# #  將聯絡人寫入使用者
+# user.contacts.append(contact)
+# #  將資料寫入
+# db.session.add(user)
+# db.session.commit()
 
-admin = User('admin', 'admin@abc.com')
-user1 = User('user1', 'user1@abc.com')
-# 寫入資料
-db.session.add(admin)
-db.session.add(user1)
+# secondly
+user = User(username='Cust', email='Cust@abc.com')
+contact = Contact.query.filter_by(id=1).first()
+user.contacts.append(contact)
+db.session.add(user)
 db.session.commit()
