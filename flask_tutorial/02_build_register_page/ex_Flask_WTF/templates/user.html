@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="POST" action="{{ url_for('user') }}" novalidate>
+    {{ form.csrf_token }}
+    <p>
+        {{ form.username.label }} {{ form.username }}
+        {% for err in form.username.errors %}
+        <span style="color:red">{{ err }}</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{ form.email.label }} {{ form.email }}
+        {% for err in form.email.errors %}
+        <span style="color:red">{{ err }}</span>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit.label }} {{ form.submit }}</p>
+</form>
+</body>
+</html>
