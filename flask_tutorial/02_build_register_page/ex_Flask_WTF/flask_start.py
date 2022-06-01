@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from view_from import UserForm
 
 app = Flask(__name__)
-app.secret_key= '\x17\xc5=\xaf\x98\x16]\xa8\xb5x\x9f6'
+app.secret_key = '\x17\xc5=\xaf\x98\x16]\xa8\xb5x\x9f6'
 
 @app.route("/user", methods=["GET", "POST"])
 def user():
