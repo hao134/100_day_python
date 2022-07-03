@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        {% block head %}
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- unicorn -->
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.6/css/line.css">
+
+        {% block styles %}
+            <!-- Bootstrap CSS -->
+            {{ bootstrap.load_css() }}
+        {% endblock %}
+
+        <title>Restaurants</title>
+        {% endblock %}
+    </head>
+    <body style="background-color:orange;">
+        <!-- Your page content -->
+        {% block content %}
+        <h1>All Cafes</h1>
+        <hr>
+
+        <div class="container">
+          <div class="row">
+            {% for cafe in all_posts %}
+            <div class="col-6">
+              <h2>{{ cafe.name }}  <a href="{{ url_for('delete_cafe', cafe_id=cafe.id) }} "><i class="uil uil-cancel"></i></a></h2>
+              <div class="col-6">
+
+                <p><i class="uil uil-map-marker"></i>{{ cafe.location }}</p>
+              </div>
+              <div class="col-6">
+                <img style = "border-radius: 50%;" id="squared__img" src="{{ cafe.img_url }}" width="180" height="180">
+                <a href = "{{ cafe.map_url }}"> Maps Link </a>
+              </div>
+
+              {% if cafe.has_sockets: %}
+              <i class="uil uil-plug" style="font-size:1.5rem;"></i>
+              {% endif %}
+              {% if cafe.has_toilet: %}
+              <i class="uil uil-toilet-paper" style="font-size:1.5rem;"></i>
+              {% endif %}
+              {% if cafe.has_wifi: %}
+              <i class="uil uil-wifi" style="font-size:1.5rem;"></i>
+              {% endif %}
+              {% if not cafe.can_take_calls: %}
+              <i class="uil uil-phone-slash" style="font-size:1.5rem"></i>
+              {% endif %}
+              <div class="col-6">
+                <p>seats: {{ cafe.seats }}   {{ cafe.coffee_price }}<a href="{{ url_for('edit_price', cafe_id=cafe.id) }}"><i class="uil uil-edit"></i></a></p>
+              </div>
+              <hr>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <h2><a href="{{ url_for('home') }}">Return to home page</a></h2>
+        {% endblock %}
+        {% block scripts %}
+            <!-- Optional JavaScript -->
+            {{ bootstrap.load_js() }}
+        {% endblock %}
+    </body>
+</html>
+
+
+
+

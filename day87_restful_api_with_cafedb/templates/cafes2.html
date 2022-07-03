@@ -1,0 +1,58 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}Restaurants{% endblock %}
+
+{% block styles %}
+{{ super() }}
+    <link rel = "stylesheet" href = "{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+
+      <h1>All Cafes</h1>
+      <hr>
+
+        <table class="table">
+          <thead>
+            <th scope="col">Cafe Name</th>
+            <th scope="col">Map Url</th>
+            <th scope="col">Img Url</th>
+            <th scope="col">location</th>
+            <th scope="col">sockets?</th>
+            <th scope="col">toilet?</th>
+            <th scope="col">wifi?</th>
+            <th scope="col">take calls?</th>
+            <th scope="col">seats</th>
+            <th scope="col">coffee price</th>
+          </thead>
+          <tbody>
+          {% for cafe in all_posts %}
+              <tr>
+                <th scope="row">{{ cafe.name }}</th>
+                <td><a href = "{{ cafe.map_url }}"> Maps Link </a></td>
+                <td><img id="squared__img" src="{{ cafe.img_url }}" width="200" height="200"></td>
+                <td>{{ cafe.location }}</td>
+                <td>{{ cafe.has_sockets }}</td>
+                <td>{{ cafe.has_toilet }}</td>
+                <td>{{ cafe.has_wifi }}</td>
+                <td>{{ cafe.can_take_calls }}</td>
+                <td>{{ cafe.seats }}</td>
+                <td>{{ cafe.coffee_price }}</td>
+                <td><a href="{{ url_for('delete_cafe', cafe_id=cafe.id) }} ">X</a></td>
+              </tr>
+          {% endfor %}
+          </tbody>
+
+        </table>
+
+      <p><a href="{{ url_for('home') }}">Return to home page</a></p>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
