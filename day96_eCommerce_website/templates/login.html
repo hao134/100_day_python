@@ -1,0 +1,35 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header.html" %}
+
+<html>
+    <!-- Page Header -->
+    <header>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+              <div class="page-heading">
+                <h1>Log In</h1>
+                <span class="subheading">Welcome Back!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+    </header>
+
+    <body>
+        {% block content %}
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endwith %}
+                {{ render_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </body>
+</html>

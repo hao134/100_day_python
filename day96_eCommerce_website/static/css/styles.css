@@ -60,7 +60,7 @@
 	 margin-left: 1rem;
 	 margin-bottom: 3rem;
 }
-/* .card {
+.card {
 	 color: inherit;
 	 cursor: pointer;
 	 width: calc(33% - 3rem);
@@ -71,6 +71,7 @@
 	 margin: 1rem auto;
 	 position: relative;
 }
+
  @media screen and (max-width: 800px) {
 	 .card {
 		 width: calc(50% - 3rem);
@@ -80,7 +81,7 @@
 	 .card {
 		 width: 100%;
 	}
-}*/
+}
  .front, .back {
 	 display: flex;
 	 border-radius: 6px;
@@ -118,7 +119,7 @@
 	 opacity: 0.25;
 	 z-index: -1;
 }
-/* .card:hover .front {
+.card:hover .front {
 	 transform: rotateY(180deg);
 }
  .card:nth-child(even):hover .front {
@@ -137,7 +138,7 @@
 }
  .card:nth-child(even):hover .back {
 	 transform: rotateY(0deg);
-}*/
+}
  .button {
 	 transform: translateZ(40px);
 	 cursor: pointer;
@@ -212,4 +213,6 @@
  .release_date {
 	 font-weight: normal;
 }
-
+.error {
+    color: red
+}

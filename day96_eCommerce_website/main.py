@@ -1,9 +1,10 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
+from forms import RegisterForm, LoginForm
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
 import requests
 
 MOVIE_DB_API_KEY = "f23630e371240007466edc8cb63276a5"
@@ -18,33 +19,40 @@ app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
 ##CREATE DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+### Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(userid):
+    return User.query.get(int(userid))
+
 
 ##CREATE TABLE
-class Movie(db.Model):
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(250), unique=True, nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    description = db.Column(db.String(500), nullable=False)
-    rating = db.Column(db.Float, nullable=True)
-    ranking = db.Column(db.Integer, nullable=True)
-    review = db.Column(db.String(250), nullable=True)
-    img_url = db.Column(db.String(250), nullable=False)
-# db.create_all()
+    name = db.Column(db.String(250), nullable=False)
+    email = db.Column(db.String, nullable = False)
+    password = db.Column(db.String, nullable = False)
+    address = db.Column(db.String, nullable = False)
 
+db.create_all()
 
-class FindMovieForm(FlaskForm):
-    title = StringField("Movie Title", validators=[DataRequired()])
-    submit = SubmitField("Add Movie")
-
-
-class RateMovieForm(FlaskForm):
-    rating = StringField("Your Rating Out of 10 e.g. 7.5")
-    review = StringField("Your Review")
-    submit = SubmitField("Done")
+class Cart(db.Model):
+    __tablename__ = "carts"
+    id = db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.String, nullable = False)
+    product_id = db.Column(db.String, nullable = False)
+    image = db.Column(db.String, nullable = False)
+    price = db.Column(db.Integer, nullable = False)
+    is_purchased = db.Column(db.Boolean, nullable = False)
+    buyer = db.Column(db.String, nullable = False)
+db.create_all()
 
 
 @app.route("/", methods = ["GET", "POST"])
@@ -65,56 +73,58 @@ def home():
     # db.session.commit()
     return render_template("index.html", movies=all_movies)
 
-
-@app.route("/add", methods=["GET", "POST"])
-def add_movie():
-    form = FindMovieForm()
+@app.route("/register", methods = ["GET", "POST"])
+def register():
+    form = RegisterForm()
     if form.validate_on_submit():
-        movie_title = form.title.data
+        already_exist = User.query.filter_by(email=form.email.data).first()
+        if not already_exist:
+            hash_pass = generate_password_hash(
+                form.password.data,
+                method = "pbkdf2:sha256",
+                salt_length=8
+            )
+            new_User = User(
+                name = form.name.data,
+                email = form.email.data,
+                password = hash_pass,
+                address = form.address.data
+            )
+            db.session.add(new_User)
+            db.session.commit()
+            login_user(new_User)
+            return redirect(url_for("home"))
+        else:
+            flash("You've already signed up with that email, log in instead!", 'error')
+            return redirect(url_for("login"))
+    return render_template("register.html", form = form, current_user=current_user)
 
-        response = requests.get(MOVIE_DB_SEARCH_URL, params={"api_key": MOVIE_DB_API_KEY, "query": movie_title})
-        data = response.json()["results"]
-        return render_template("select.html", options=data)
-    return render_template("add.html", form=form)
-
-
-@app.route("/find")
-def find_movie():
-    movie_api_id = request.args.get("id")
-    if movie_api_id:
-        movie_api_url = f"{MOVIE_DB_INFO_URL}/{movie_api_id}"
-        response = requests.get(movie_api_url, params={"api_key": MOVIE_DB_API_KEY, "language": "en-US"})
-        data = response.json()
-        new_movie = Movie(
-            title=data["title"],
-            year=data["release_date"].split("-")[0],
-            img_url=f"{MOVIE_DB_IMAGE_URL}{data['poster_path']}",
-            description=data["overview"]
-        )
-        db.session.add(new_movie)
-        db.session.commit()
-        return redirect(url_for("rate_movie", id=new_movie.id))
-
-
-@app.route("/edit", methods=["GET", "POST"])
-def rate_movie():
-    form = RateMovieForm()
-    movie_id = request.args.get("id")
-    movie = Movie.query.get(movie_id)
+@app.route("/login", methods = ["GET", "POST"])
+def login():
+    form = LoginForm()
     if form.validate_on_submit():
-        movie.rating = float(form.rating.data)
-        movie.review = form.review.data
-        db.session.commit()
-        return redirect(url_for('home'))
-    return render_template("edit.html", movie=movie, form=form)
+        email = form.email.data
+        password = form.password.data
+        user = User.query.filter_by(email=email).first()
+        # Email doesn't exist
+        if not user:
+            flash("No this user",'error')
+            return redirect(url_for("login"))
 
+        # Check stored password hash against entered password hashed
+        elif not check_password_hash(user.password, password):
+            flash("Password incorrect, please try again.",'error')
+            return redirect(url_for("login"))
 
-@app.route("/delete")
-def delete_movie():
-    movie_id = request.args.get("id")
-    movie = Movie.query.get(movie_id)
-    db.session.delete(movie)
-    db.session.commit()
+        # Email exists and password correct
+        else:
+            login_user(user)
+            return redirect(url_for("home"))
+    return render_template("login.html", form =form, current_user=current_user)
+
+@app.route("/logout")
+def logout():
+    logout_user()
     return redirect(url_for("home"))
 
 
