@@ -14,6 +14,7 @@
                   <div>
                       <div class="title">{{movie['title']}}<span class="release_date">({{movie['release_date'].split('-')[0] }})</span></div>
                       <div class="overview"><p class="overview">{{movie['overview'][:156] }}...</p></div>
+                      <a href="{{ url_for('show_single_movie', id = movie['id']) }}" class="btn btn-primary" role="button">Open</a>
                   </div>
               </div>
           </div>

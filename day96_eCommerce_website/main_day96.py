@@ -6,6 +6,7 @@ from flask_wtf import FlaskForm
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
+import os
 
 MOVIE_DB_API_KEY = "f23630e371240007466edc8cb63276a5"
 MOVIE_DB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie"
@@ -13,6 +14,10 @@ MOVIE_DB_DISCOVER_URL = "https://api.themoviedb.org/3/discover/movie"
 MOVIE_DB_INFO_URL = "https://api.themoviedb.org/3/movie"
 MOVIE_DB_IMAGE_URL = "https://api.themoviedb.org/3/search/movie/https://image.tmdb.org/t/p/w500"
 DEFAULT_URL = "/discover/movie?sort_by=popularity.desc"
+STRIPE_KEYS = {
+    "secret_key": os.environ["STRIPE_SECRET_KEY"],
+    "publishable_key": os.environ["STRIPE_PUBLISHABLE_KEY"],
+}
 default_response = requests.get("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key="+MOVIE_DB_API_KEY)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -54,9 +59,13 @@ class Cart(db.Model):
     buyer = db.Column(db.String, nullable = False)
 db.create_all()
 
+# variables
+all_movies = []
 
 @app.route("/", methods = ["GET", "POST"])
 def home():
+    global all_movies
+    all_movies = []
     if request.method == "POST":
         title = request.form.get("movie_name")
         search_response = requests.get(MOVIE_DB_SEARCH_URL, params={"api_key": MOVIE_DB_API_KEY, "query": title})
@@ -68,6 +77,7 @@ def home():
     movie_data = default_response.json()
     default_data = movie_data["results"]
     all_movies = [movie for movie in default_data if movie['poster_path']]
+
     # for i in range(len(all_movies)):
     #     all_movies[i].ranking = len(all_movies) - i
     # db.session.commit()
@@ -126,6 +136,21 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("home"))
+
+@app.route("/show-movie/<int:id>")
+def show_single_movie(id):
+    get_movie = [movie for movie in all_movies if movie["id"] ==id]
+    if current_user.is_authenticated:
+        book = Cart.query.filter_by(buyer=current_user.email, is_purchased=False, product_id=id).first()
+        if book:
+            message = "Added to cart"
+        else:
+            message = ""
+    else:
+        message = ""
+    return render_template("single_movie.html", movie=get_movie[0],
+                           authenticated = current_user.is_authenticated, message=message)
+
 
 
 if __name__ == '__main__':

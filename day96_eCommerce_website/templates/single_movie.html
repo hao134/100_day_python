@@ -1,0 +1,43 @@
+{% include "header.html" %}
+
+<html>
+    <!-- Page Header -->
+    <header>
+        <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+          <div class="col-10 col-sm-8 col-lg-6" style="width:28rem;">
+            <img src="https://image.tmdb.org/t/p/w500{{ movie['poster_path'] }}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+          </div>
+          <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3">{{ movie.title }}</h1>
+            <p class="lead">Release_date: {{ movie.release_date }}</p>
+            <p class="lead">Language: {{ movie.original_language }}</p>
+            <p class="lead">Average vote Score: {{ movie.vote_average }}</p>
+            <p class="lead">Vote count: {{ movie.vote_count }}</p>
+
+            {% if message == "": %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <button type="button" class="btn btn-primary btn-lg px-4 me-md-2">Add to card</button>
+            </div>
+            {% else %}
+			<div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </header>
+    <body>
+        {% block content %}
+        <div class="bg-dark text-secondary px-4 py-5 text-center">
+            <div class="py-5">
+              <h1 class="display-5 fw-bold text-white">About Movie</h1>
+              <div class="col-lg-6 mx-auto">
+                <p class="fs-3 mb-4">{{movie['overview']}}</p>
+              </div>
+            </div>
+          </div>
+        {% endblock %}
+    </body>
+</html>
