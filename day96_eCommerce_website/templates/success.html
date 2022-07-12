@@ -1,0 +1,22 @@
+{% include "header.html" %}
+
+<html>
+    <head>
+        <title>Payment Successful</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class="jumbotron">
+            <div class="alert alert-success" role="alert">
+              <h1 class="display-4">Payment Successful</h1>
+            </div>
+            <p class="lead">Thanks for using our services.</p>
+            <hr class="my-4">
+            <p>Just for testing purpose. </p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="{{ url_for('home') }}" role="button">Return to Home</a>
+            </p>
+        </div>
+        {% endblock %}
+    </body>
+</html>

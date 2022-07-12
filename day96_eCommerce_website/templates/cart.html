@@ -1,0 +1,102 @@
+{% include "header.html" %}
+
+<html>
+    <head>
+        <title>Cart</title>
+        <script src="https://js.stripe.com/v3/"></script>
+    </head>
+    <body>
+        {% block content %}
+        <section class="py-5 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-6 col-md-8 mx-auto">
+                    <h1 class="fw-light">Your Shopping Cart</h1>
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-primary rounded-pill">{{ cart | length }}</span>
+                    </h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">Total Movies</h6>
+                            </div>
+                            <span class="text-muted">{{ cart | length }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">Total Amount</h6>
+                            </div>
+                            <span class="text-muted">&#36; {{ total_price }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between bg-lignt">
+                            <div class="text-success">
+                                <h6 class="my-0">Discount every 5 movies rented </h6>
+                            </div>
+                            <span class="text-muted">20% OFF</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Payable Amount</span>
+                            {% if cart | length != 0: %}
+                            <strong>&#36; {{ payable_amount }}</strong>
+                            {% else: %}
+                            <strong>&#36; 0</strong>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    {% if cart | length == 0: %}
+                    <div class="alert alert-danger" role="alert">
+                        <p>No ranted Movie</p>
+                    </div>
+                    <button class="btn btn-primary my-2" disabled="true">Make Payment</button>
+                    {% else %}
+                    <button class="btn btn-primary my-2" id="checkout-button">Make Payment</button>
+                    {% endif %}
+                    <a href="{{ url_for('home') }}" class="btn btn-secondary my-2">Return to Home Page</a>
+                </div>
+            </div>
+        </section>
+        <div class="row">
+            {% for item in cart: %}
+            <div class="col-4 col-6-medium col-12-small">
+                <div class="card mb-3" style="height:35rem;width:22rem;">
+                    <img src="{{ item.image }}"  width="380" height="486">
+
+                    <div class="card-title">
+                        <h5>{{ item.title }}</h5>
+                    </div>
+                    <div class="card-text text-primary">
+                        <a href="{{ url_for('delete_item', id=item.id) }}" class="btn btn-sm btn-outline-secondary" role="button">Delete form cart</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endblock %}
+
+    <script type="text/javascript">
+        //Create an instance of the Stripe object with your published API key
+        var stripe = Stripe('{{ public_key }}');
+        var checkoutButton = document.getElementById('checkout-button');
+
+        checkoutButton.addEventListener('click', function() {
+          fetch('/create-checkout-session',{
+            method: 'POST',
+          })
+          .then(function(response) {
+            var data = response.json()
+            return data;
+          })
+          .then(function(session) {
+            return stripe.redirectToCheckout({ sessionId: session.id });
+          })
+          .then(function(result) {
+            if (result.error) {
+              alert(result.error.message);
+            }
+          })
+          .catch(function(error) {
+            console.error('Error:', error);
+          });
+        });
+    </script>
+    </body>
+</html>
