@@ -1,0 +1,73 @@
+{% include "header.html" %}
+
+<html>
+    <head>
+        <title>Cart</title>
+        <script src="https://js.stripe.com/v3/"></script>
+    </head>
+    <body>
+        {% block content %}
+        <section class="py-5 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-6 col-md-8 mx-auto">
+                    <h1 class="fw-light"><strong>Welcome {{user.name}}</strong></h1>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">Email</h6>
+                            </div>
+                            <span class="text-muted">{{ user.email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">Address</h6>
+                            </div>
+                            <span class="text-muted">{{ user.address }}</span>
+                        </li>
+                    </ul>
+                    <a href ="{{ url_for('show_cart') }}" class="btn btn-primary my-2">Go to Cart</a>
+                    <a href="{{ url_for('home') }}" class="btn btn-secondary my-2">Return to Home Page</a>
+                </div>
+            </div>
+        </section>
+        <div class="row">
+            <h1 class="fw-light text-center">Movies in cart</h1>
+            {% if cart_movies | length == 0: %}
+            <div class="alert alert-danger" role="alert">
+                <p>No Movie in Cart</p>
+            </div>
+            {% else %}
+            {% for item in cart_movies: %}
+            <div class="col-4 col-6-medium col-12-small">
+                <div class="card mb-3" style="height:35rem;width:22rem;">
+                    <img src="{{ item.image }}"  width="380" height="486">
+
+                    <div class="card-title">
+                        <h5>{{ item.title }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div class="row">
+            <h1 class="fw-light text-center">Rented Movies</h1>
+            {% if purchased_movies | length == 0: %}
+            <div class="alert alert-danger" role="alert">
+                <p>No Ranted Movie</p>
+            </div>
+            {% else %}
+            {% for item in purchased_movies: %}
+            <div class="col-4 col-6-medium col-12-small">
+                <div class="card mb-3" style="height:35rem;width:22rem;">
+                    <img src="{{ item.image }}"  width="380" height="486">
+
+                    <div class="card-title">
+                        <h5>{{ item.title }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% endblock %}

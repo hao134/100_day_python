@@ -17,6 +17,7 @@
             <p class="lead">Average vote Score: {{ movie['vote_average'] }}</p>
             <p class="lead">Vote count: {{ movie['vote_count'] }}</p>
 
+            {% if is_online: %}
             {% if message == "": %}
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <a href="{{ url_for('add_to_cart', id=movie['id']) }}" class="btn btn-primary btn-lg px-4 me-md-2">Add to card</a>
@@ -26,6 +27,12 @@
                 {{ message }}
             </div>
             {% endif %}
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                <p>The movie is not online yet</p>
+            </div>
+            {% endif %}
+
           </div>
         </div>
       </div>

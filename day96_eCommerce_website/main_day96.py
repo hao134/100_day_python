@@ -2,14 +2,14 @@ from flask import Flask, render_template, redirect, url_for, request, flash, jso
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegisterForm, LoginForm
-from flask_wtf import FlaskForm
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
 import stripe
+import datetime
 import os
 
-MOVIE_DB_API_KEY = "f23630e371240007466edc8cb63276a5"
+MOVIE_DB_API_KEY =  os.environ["MOVIE_API_KEY"]
 MOVIE_DB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie"
 MOVIE_DB_DISCOVER_URL = "https://api.themoviedb.org/3/discover/movie"
 MOVIE_DB_INFO_URL = "https://api.themoviedb.org/3/movie"
@@ -21,7 +21,7 @@ stripe_public_key = os.environ["STRIPE_PUBLISHABLE_KEY"]
 
 default_response = requests.get("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key="+MOVIE_DB_API_KEY)
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ["SECRET_KEY"]
 Bootstrap5(app)
 
 ##CREATE DB
@@ -79,9 +79,6 @@ def home():
     default_data = movie_data["results"]
     all_movies = [movie for movie in default_data if movie['poster_path']]
 
-    # for i in range(len(all_movies)):
-    #     all_movies[i].ranking = len(all_movies) - i
-    # db.session.commit()
     return render_template("index.html", movies=all_movies)
 
 @app.route("/register", methods = ["GET", "POST"])
@@ -149,8 +146,11 @@ def show_single_movie(id):
             message = ""
     else:
         message = ""
-    return render_template("single_movie.html", movie=get_movie[0],
-                           authenticated = current_user.is_authenticated, message=message)
+    if datetime.datetime.fromisoformat(get_movie[0]["release_date"]) < datetime.datetime.now():
+        online = True
+    else:
+        online = False
+    return render_template("single_movie.html", movie=get_movie[0], is_online = online, message=message)
 
 @app.route("/add-to-cart/<int:id>")
 def add_to_cart(id):
@@ -171,6 +171,14 @@ def add_to_cart(id):
     db.session.commit()
     return redirect(url_for('show_single_movie', id = id))
 
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    cart_movies = Cart.query.filter_by(buyer=current_user.email, is_purchased=False).all()
+    purchased_movies = Cart.query.filter_by(buyer=current_user.email, is_purchased=True).all()
+    return render_template("dashboard.html", user=current_user, cart_movies=cart_movies,purchased_movies=purchased_movies)
+
+
 @app.route("/cart")
 def show_cart():
     if not current_user.is_authenticated:
@@ -189,7 +197,7 @@ def show_cart():
     payable_amount = int(total_price * discount)
     cart_list = ",".join([item.title for item in all_items])
     return render_template("cart.html", cart=all_items, total_price = total_price, payable_amount=payable_amount,
-                           public_key = stripe_public_key, authenticated=current_user.is_authenticated)
+                           public_key = stripe_public_key)
 
 @app.route("/delete/<int:id>")
 def delete_item(id):
@@ -232,12 +240,12 @@ def success():
         movie.is_purchased = True
         db.session.commit()
     cart_list=""
-    return render_template("success.html", authenticated=current_user.is_authenticated)
+    return render_template("success.html")
 
 @app.route("/failed")
 @login_required
 def failed():
-    return render_template("cancel.html", authenticated=current_user.is_authenticated)
+    return render_template("cancel.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
