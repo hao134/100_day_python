@@ -1,0 +1,85 @@
+{% include "header.html" %}
+
+<html>
+    <head>
+        <title>Home</title>
+    </head>
+    <body>
+    {% block content %}
+    <div class="container">
+        <div class="row mb-2">
+            <div class="col-md-6">
+              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                  <strong class="d-inline-block mb-2 text-primary">Statistics</strong>
+                  <hr>
+                  <div class="row">
+                      <div class="col-md-4 ">
+                          <h6>Total</h6>
+                          <p>{{ nums_total }}</p>
+                      </div>
+                      <div class="col-md-4">
+                          <h6>Completed</h6>
+                          <p>{{ nums_completed }}</p>
+                      </div>
+                      <div class="col-md-4">
+                          <h6>Uncompleted</h6>
+                          <p>{{ nums_uncompleted }}</p>
+                      </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-6">
+              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                  <strong class="d-inline-block mb-2 text-success">ToDo Form</strong>
+                  <hr>
+                  <p>Title</p>
+                  <form action="/" method="post" class="d-flex">
+                    <input class="form-control me-2" type="text" name="todo_list" placeholder="Add todo..." aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Add</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% for Lt in lists %}
+            <div class="col-md-12">
+              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                  <h2><strong class="d-inline-block mb-2 text-dark">{{ Lt.id }} | {{ Lt.title }}</strong></h2>
+                  <p>{{ Lt.date }}</p>
+                  <hr>
+                  <h5>
+                      {% if Lt.is_completed %}
+                      <span class="badge rounded-pill bg-success">Completed</span>
+                      {% else %}
+                      <span class="badge rounded-pill bg-secondary">Uncompleted</span>
+                      {% endif %}
+                      <a href="{{ url_for('update', list_id = Lt.id) }}">
+                        <button type="button" class="btn btn-info">Update</button>
+                      </a>
+                      <a href="{{ url_for('delete', list_id = Lt.id) }}">
+                        <button type="button" class="btn btn-danger">Delete</button>
+                      </a>
+                  </h5>
+
+
+                </div>
+              </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    {% endblock %}
+        {% block scripts %}
+            <!-- Optional JavaScript -->
+            {{ bootstrap.load_js() }}
+        {% endblock %}
+    </body>
+</html>

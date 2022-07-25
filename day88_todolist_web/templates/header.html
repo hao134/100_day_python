@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        {% block head %}
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- unicorn -->
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.6/css/line.css">
+
+        {% block styles %}
+            <!-- Bootstrap CSS -->
+            {{ bootstrap.load_css() }}
+            <link rel="stylesheet" href="{{url_for('.static', filename='css/styles.css')}}">
+
+        {% endblock %}
+
+
+        {% endblock %}
+    </head>
+    <body>
+    {% block content %}
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <p class="navbar-brand">ToDo App</p>
+      </div>
+    </nav>
+    {% endblock %}
+    </body>
