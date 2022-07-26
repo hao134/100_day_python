@@ -45,23 +45,23 @@
                 </div>
               </div>
             </div>
-            {% for Lt in lists %}
+            {% for index in range(nums_total) %}
             <div class="col-md-12">
               <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                 <div class="col p-4 d-flex flex-column position-static">
-                  <h2><strong class="d-inline-block mb-2 text-dark">{{ Lt.id }} | {{ Lt.title }}</strong></h2>
-                  <p>{{ Lt.date }}</p>
+                  <h2><strong class="d-inline-block mb-2 text-dark">{{ index + 1 }}. {{ lists[index].title }}</strong></h2>
+                  <p>{{ lists[index].date }}</p>
                   <hr>
                   <h5>
-                      {% if Lt.is_completed %}
+                      {% if lists[index].is_completed %}
                       <span class="badge rounded-pill bg-success">Completed</span>
                       {% else %}
                       <span class="badge rounded-pill bg-secondary">Uncompleted</span>
                       {% endif %}
-                      <a href="{{ url_for('update', list_id = Lt.id) }}">
+                      <a href="{{ url_for('update', list_id = lists[index].id) }}">
                         <button type="button" class="btn btn-info">Update</button>
                       </a>
-                      <a href="{{ url_for('delete', list_id = Lt.id) }}">
+                      <a href="{{ url_for('delete', list_id = lists[index].id) }}">
                         <button type="button" class="btn btn-danger">Delete</button>
                       </a>
                   </h5>

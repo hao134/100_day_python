@@ -1,9 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
-# from forms import RegisterForm, LoginForm
-# from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
-from werkzeug.security import generate_password_hash, check_password_hash
 import requests
 from datetime import timezone, datetime, timedelta
 import os
@@ -25,21 +22,6 @@ class todoList(db.Model):
     date = db.Column(db.String(250), nullable = False)
 db.create_all()
 
-
-
-# class Cart(db.Model):
-#     __tablename__ = "carts"
-#     id = db.Column(db.Integer, primary_key = True)
-#     title = db.Column(db.String, nullable = False)
-#     product_id = db.Column(db.String, nullable = False)
-#     image = db.Column(db.String, nullable = False)
-#     price = db.Column(db.Integer, nullable = False)
-#     is_purchased = db.Column(db.Boolean, nullable = False)
-#     buyer = db.Column(db.String, nullable = False)
-# db.create_all()
-#
-# # variables
-# all_movies = []
 
 @app.route("/", methods = ["GET", "POST"])
 def home():
