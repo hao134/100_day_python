@@ -1,0 +1,101 @@
+{% include "header.html" %}
+<html lang="en">
+    <body>
+    {% block content %}
+    <p> <h1 align="center">Python Flask Display Image and Extract Top 10 Colours from Image</h1> </p>
+    <div class="container">
+        <div class="row">
+            <h2>Select a file to upload</h2>
+            <p>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </p>
+            {% if filename %}
+            <div style="padding:20px;">
+                <img src="{{ url_for('display_image', filename=filename) }}">
+            </div>
+            <p>{{ hash_colors[:-1] }}</p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hex codes</th>
+                  <th scope="col">Colors</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>{{ hash_colors[0] }}</td>
+                  <td style="background-color:{{ hash_colors[0] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td>{{ hash_colors[1] }}</td>
+                  <td style="background-color:{{ hash_colors[1] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td>{{ hash_colors[2] }}</td>
+                  <td style="background-color:{{ hash_colors[2] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">4</th>
+                  <td>{{ hash_colors[3] }}</td>
+                  <td style="background-color:{{ hash_colors[3] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td>{{ hash_colors[4] }}</td>
+                  <td style="background-color:{{ hash_colors[4] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">6</th>
+                  <td>{{ hash_colors[5] }}</td>
+                  <td style="background-color:{{ hash_colors[5] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">7</th>
+                  <td>{{ hash_colors[6] }}</td>
+                  <td style="background-color:{{ hash_colors[6] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">8</th>
+                  <td>{{ hash_colors[7] }}</td>
+                  <td style="background-color:{{ hash_colors[7] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">9</th>
+                  <td>{{ hash_colors[8] }}</td>
+                  <td style="background-color:{{ hash_colors[8] }}"></td>
+                </tr>
+                <tr>
+                  <th scope="row">10</th>
+                  <td>{{ hash_colors[9] }}</td>
+                  <td style="background-color:{{ hash_colors[9] }}"></td>
+                </tr>
+              </tbody>
+            </table>
+            {% endif %}
+            <form method="post" action="/" enctype="multipart/form-data">
+                <dl>
+                    <p>
+                        <input type="file" name="file" class="form-control" autocomplete="off" required>
+                    </p>
+                </dl>
+                <p>
+                    <input type="submit" value="Submit" class="btn btn-info">
+                </p>
+            </form>
+        </div>
+    </div>
+    {% endblock %}
+    </body>
+</html>
